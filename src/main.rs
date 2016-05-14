@@ -33,7 +33,7 @@ fn read_input() -> Result<String, io::Error> {
 
 fn run(input: &str) {
     let input: Vec<char> = input.chars().filter(|c| is_bf_char(*c)).collect();
-    let mut cells: Vec<Box<u8>> = vec![Box::new(0u8)];
+    let mut cells: Vec<Box<u32>> = vec![Box::new(0u32)];
     let mut ci: usize = 0;
     let mut ii: usize = 0;
     let mut loops: Vec<usize> = vec![];
@@ -48,7 +48,7 @@ fn run(input: &str) {
                 }
                 ci += 1;
                 if ci == cells.len() {
-                    cells.push(Box::new(0u8));
+                    cells.push(Box::new(0u32));
                 }
             },
             BF_DP => {
@@ -88,7 +88,7 @@ fn run(input: &str) {
                 }
             },
             BF_OUTP => {
-                print!("{}", *cells[ci] as char);
+                print!("{}", (*cells[ci] as u8) as char);
             },
             _ => panic!("Unknown token {:?}", input[ii]),
         }

@@ -12,7 +12,6 @@ const BF_OUTP: char   = '.';
 const BF_INP: char    = ',';
 const BF_LSTART: char = '[';
 const BF_LEND: char   = ']';
-const LF: char        = '\n';
 
 fn main() {
     if let Ok(input) = read_input() {
@@ -33,7 +32,8 @@ fn read_input() -> Result<String, io::Error> {
 }
 
 fn run(input: &str) {
-    let input: Vec<char> = input.chars().collect();
+    let input: Vec<char> = input.chars().filter(|c| is_bf_char(*c)).collect();
+    println!("{:?}", input);
     let mut cells: Vec<Box<u8>> = vec![Box::new(0u8)];
     let mut ci: usize = 0;
     let mut ii: usize = 0;
@@ -60,10 +60,17 @@ fn run(input: &str) {
             },
             BF_LSTART => {
                 if *cells[ci] == 0 {
+                    let mut skip: usize = 0;
                     loop {
                         ii += 1;
-                        if input[ii] == BF_LEND {
-                            break;
+                        if input[ii] == BF_LSTART {
+                            skip += 1;
+                        } else if input[ii] == BF_LEND{
+                            if skip > 0 {
+                                skip -= 1;
+                            } else {
+                                break;
+                            }
                         }
                     }
                 } else {
@@ -75,7 +82,7 @@ fn run(input: &str) {
                     if let Some(li) = loops.last() {
                         ii = *li;
                     } else {
-                        panic!("Non-matching loop");
+                        panic!("Unmatched {} at index {}", BF_LEND, ii);
                     }
                 } else {
                     loops.pop();
@@ -84,12 +91,13 @@ fn run(input: &str) {
             BF_OUTP => {
                 print!("{}", *cells[ci] as char);
             },
-            LF => {
-                ii += 1;
-            },
             _ => panic!("Unknown token {:?}", input[ii]),
         }
         ii += 1;
     }
-    print!("{}", LF);
+}
+
+fn is_bf_char(c: char) -> bool {
+    c == BF_OUTP || c == BF_LEND || c == BF_LSTART || c == BF_DP ||
+    c == BF_INP  || c == BF_IP   || c == BF_DPV    || c == BF_IPV
 }

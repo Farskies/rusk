@@ -33,7 +33,6 @@ fn read_input() -> Result<String, io::Error> {
 
 fn run(input: &str) {
     let input: Vec<char> = input.chars().filter(|c| is_bf_char(*c)).collect();
-    println!("{:?}", input);
     let mut cells: Vec<Box<u8>> = vec![Box::new(0u8)];
     let mut ci: usize = 0;
     let mut ii: usize = 0;
